@@ -39,6 +39,7 @@ Promise.all([getSendChannel(), getReceiveChannel()]).then(
       canvas: canvas.value!,
       receiveChannel,
       sendChannel,
+      playerId: isInitiator.value ? 0 : 1,
     });
   }
 );
