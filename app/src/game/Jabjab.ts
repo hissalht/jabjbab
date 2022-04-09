@@ -36,18 +36,32 @@ export function runGame(options: JabjabGameOptions) {
 
   receiveChannel.addEventListener("message", ({ data }) => {
     const payload = JSON.parse(data);
+
+    const currentFrame = world.frame;
+    const receivedFrame = payload.frame;
+    world.debug.fdif = currentFrame - receivedFrame;
+    if (currentFrame % 60 === 0) {
+      console.log("Sync difference:", currentFrame - receivedFrame);
+    }
+
     const otherPlayerId = playerId === 0 ? 1 : 0;
     world.inputs[otherPlayerId] = payload.inputs[otherPlayerId];
   });
 
+  const FRAME_DIFF = 1000 / 61;
   let then = 0;
   function loop(now: number) {
-    if (now - then >= 1000 / 60) {
+    requestAnimationFrame(loop);
+
+    // TODO: framerate is wonky on firefox. Find a way to balance frame length over time.
+    const diff = now - then;
+    if (diff >= FRAME_DIFF) {
+      world.debug.tslf = now - then;
+      world.debug.fps = 1000 / (now - then);
       then = now;
       pipeline(world);
       world.frame++;
     }
-    requestAnimationFrame(loop);
   }
 
   requestAnimationFrame(loop);

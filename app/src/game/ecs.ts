@@ -7,7 +7,6 @@ import {
   IWorld,
   Types,
 } from "bitecs";
-import { getSendChannel } from "../rtc";
 
 export interface JabjabWorld extends IWorld {
   frame: 0;
@@ -20,6 +19,11 @@ export interface JabjabWorld extends IWorld {
       left: boolean;
       right: boolean;
     };
+  };
+  debug: {
+    tslf: number;
+    fps: number;
+    fdif: number;
   };
 }
 
@@ -35,6 +39,11 @@ export function createWorld(): JabjabWorld {
         left: false,
         right: false,
       },
+    },
+    debug: {
+      tslf: 0,
+      fps: 0,
+      fdif: 0,
     },
   });
 }
@@ -108,6 +117,13 @@ export function RenderingSystem(ctx: CanvasRenderingContext2D) {
       );
       ctx.fill();
     }
+
+    ctx.font = "3rem Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText(`TSLF: ${world.debug.tslf.toFixed(1)} ms`, 300, 50);
+    ctx.fillText(`FPS: ${world.debug.fps.toFixed(1)} Hz`, 300, 100);
+    ctx.fillText(`FDIF: ${world.debug.fdif}`, 300, 150);
+
     return world;
   };
 }
@@ -149,7 +165,10 @@ export function NetworkSystem(sendChannel: RTCDataChannel, playerId: 0 | 1) {
         [playerId]: world.inputs[playerId],
       },
     };
-    sendChannel.send(JSON.stringify(payload));
+    // simulate network delay
+    setTimeout(() => {
+      sendChannel.send(JSON.stringify(payload));
+    }, 100);
     return world;
   };
 }
