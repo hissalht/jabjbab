@@ -34,6 +34,10 @@ async function onSdpOffer(offer: any) {
 
 function onDatachannel({ channel }: RTCDataChannelEvent) {
   receiveChannel = channel;
+  // receiveChannel.addEventListener("message", ({ data }) => {
+  //   console.log("Received message from other player");
+  //   console.log(data);
+  // });
 }
 
 socket.on("sdp-offer", onSdpOffer);

@@ -7,6 +7,7 @@ import {
   IWorld,
   Types,
 } from "bitecs";
+import { getSendChannel } from "../rtc";
 
 export interface JabjabWorld extends IWorld {
   frame: 0;
@@ -136,6 +137,19 @@ export function InputSystem(domEl: HTMLElement, playerId: 0 | 1) {
         world.inputs[playerId].right = eventType === "keydown";
       }
     }
+    return world;
+  };
+}
+
+export function NetworkSystem(sendChannel: RTCDataChannel, playerId: 0 | 1) {
+  return (world: JabjabWorld) => {
+    const payload = {
+      frame: world.frame,
+      inputs: {
+        [playerId]: world.inputs[playerId],
+      },
+    };
+    sendChannel.send(JSON.stringify(payload));
     return world;
   };
 }
