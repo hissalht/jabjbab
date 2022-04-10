@@ -17,7 +17,6 @@ interface JabjabGameOptions {
 
 export function runGame(options: JabjabGameOptions) {
   const { canvas, playerId, sendChannel, receiveChannel } = options;
-  console.log("🚀 ~ file: Jabjab.ts ~ line 19 ~ runGame ~ playerId", playerId);
 
   const ctx = canvas.getContext("2d");
   if (!ctx) {
