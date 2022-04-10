@@ -14,10 +14,14 @@ export interface JabjabWorld extends IWorld {
     0: {
       left: boolean;
       right: boolean;
+      up: boolean;
+      down: boolean;
     };
     1: {
       left: boolean;
       right: boolean;
+      up: boolean;
+      down: boolean;
     };
   };
   debug: {
@@ -34,10 +38,14 @@ export function createWorld(): JabjabWorld {
       [0]: {
         left: false,
         right: false,
+        up: false,
+        down: false,
       },
       [1]: {
         left: false,
         right: false,
+        up: false,
+        down: false,
       },
     },
     debug: {
@@ -95,6 +103,12 @@ export function MovementSystem(world: JabjabWorld) {
     if (world.inputs[playerId].right) {
       Position.x[eid] += 5;
     }
+    if (world.inputs[playerId].up) {
+      Position.y[eid] -= 5;
+    }
+    if (world.inputs[playerId].down) {
+      Position.y[eid] += 5;
+    }
   }
   return world;
 }
@@ -118,7 +132,7 @@ export function RenderingSystem(ctx: CanvasRenderingContext2D) {
       ctx.fill();
     }
 
-    ctx.font = "3rem Arial";
+    ctx.font = "3rem monospace";
     ctx.fillStyle = "white";
     ctx.fillText(`TSLF: ${world.debug.tslf.toFixed(1)} ms`, 300, 50);
     ctx.fillText(`FPS: ${world.debug.fps.toFixed(1)} Hz`, 300, 100);
@@ -134,12 +148,12 @@ export function InputSystem(domEl: HTMLElement, playerId: 0 | 1) {
   const queue: Array<QueuedKeyEvent> = [];
 
   domEl.addEventListener("keydown", (e) => {
-    // e.preventDefault()
+    e.preventDefault();
     queue.push(["keydown", e.key]);
   });
 
   domEl.addEventListener("keyup", (e) => {
-    // e.preventDefault()
+    e.preventDefault();
     queue.push(["keyup", e.key]);
   });
 
@@ -151,6 +165,10 @@ export function InputSystem(domEl: HTMLElement, playerId: 0 | 1) {
         world.inputs[playerId].left = eventType === "keydown";
       } else if (key === "ArrowRight") {
         world.inputs[playerId].right = eventType === "keydown";
+      } else if (key === "ArrowUp") {
+        world.inputs[playerId].up = eventType === "keydown";
+      } else if (key === "ArrowDown") {
+        world.inputs[playerId].down = eventType === "keydown";
       }
     }
     return world;

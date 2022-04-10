@@ -40,9 +40,6 @@ export function runGame(options: JabjabGameOptions) {
     const currentFrame = world.frame;
     const receivedFrame = payload.frame;
     world.debug.fdif = currentFrame - receivedFrame;
-    if (currentFrame % 60 === 0) {
-      console.log("Sync difference:", currentFrame - receivedFrame);
-    }
 
     const otherPlayerId = playerId === 0 ? 1 : 0;
     world.inputs[otherPlayerId] = payload.inputs[otherPlayerId];
