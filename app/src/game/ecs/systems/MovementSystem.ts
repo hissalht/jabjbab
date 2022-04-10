@@ -10,6 +10,7 @@ export const MovementSystem: JabjabSystem = function (world: JabjabWorld) {
   const eids = movableQuery(world);
   for (const eid of eids) {
     const playerId = Controllable.playerId[eid] as 0 | 1;
+    // debugger;
     if (world.inputs[playerId].left) {
       Position.x[eid] -= 5;
     }

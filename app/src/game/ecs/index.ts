@@ -2,6 +2,7 @@ import {
   addComponent,
   addEntity,
   createWorld as baseCreateWorld,
+  pipe,
 } from "bitecs";
 import { Controllable } from "./components/Controllable";
 import { Position } from "./components/Position";
@@ -57,7 +58,7 @@ export function initializeWorld(world: JabjabWorld) {
 
 export * from "./systems/InputSystem";
 export * from "./systems/MovementSystem";
-export * from "./systems/NetworkSystem";
+export * from "./systems/RollbackNetcodeSystem";
 export * from "./systems/RenderingSystem";
 
 export * from "./components/Controllable";

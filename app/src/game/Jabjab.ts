@@ -4,7 +4,7 @@ import {
   initializeWorld,
   InputSystem,
   MovementSystem,
-  NetworkSystem,
+  RollbackNetcodeSystem,
   RenderingSystem,
 } from "./ecs";
 
@@ -28,21 +28,10 @@ export function runGame(options: JabjabGameOptions) {
 
   const pipeline = pipe(
     InputSystem(document.body, playerId),
-    NetworkSystem(sendChannel, playerId),
+    RollbackNetcodeSystem(sendChannel, receiveChannel, world, playerId),
     MovementSystem,
     RenderingSystem(ctx)
   );
-
-  receiveChannel.addEventListener("message", ({ data }) => {
-    const payload = JSON.parse(data);
-
-    const currentFrame = world.frame;
-    const receivedFrame = payload.frame;
-    world.debug.fdif = currentFrame - receivedFrame;
-
-    const otherPlayerId = playerId === 0 ? 1 : 0;
-    world.inputs[otherPlayerId] = payload.inputs[otherPlayerId];
-  });
 
   const FRAME_DIFF = 1000 / 61;
   let then = 0;

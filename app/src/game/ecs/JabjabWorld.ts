@@ -1,20 +1,17 @@
 import { IWorld } from "bitecs";
 
+export interface PlayerInputs {
+  left: boolean;
+  right: boolean;
+  up: boolean;
+  down: boolean;
+}
+
 export interface JabjabWorld extends IWorld {
-  frame: 0;
+  frame: number;
   inputs: {
-    0: {
-      left: boolean;
-      right: boolean;
-      up: boolean;
-      down: boolean;
-    };
-    1: {
-      left: boolean;
-      right: boolean;
-      up: boolean;
-      down: boolean;
-    };
+    0: PlayerInputs;
+    1: PlayerInputs;
   };
   debug: {
     tslf: number; // time since last frame
