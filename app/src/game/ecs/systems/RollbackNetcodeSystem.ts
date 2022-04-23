@@ -41,68 +41,88 @@ export function RollbackNetcodeSystem(
     }
   >();
 
-  let currentWorld: JabjabWorld;
-  let queuedWorld: JabjabWorld | null;
+  const networkPayloadQueue: NetworkPayload[] = [];
 
   receiveChannel.addEventListener("message", ({ data }) => {
     const payload: NetworkPayload = JSON.parse(data);
-    const frame = payload.frame;
-
-    const savedState = W.get(frame);
-
-    if (!savedState) {
-      // TODO: handle inputs from the future
-      throw new Error("Somehow you received inputs from the future...");
-    }
-
-    const predictedInputs = savedState.i[otherPlayerId];
-    const actualInputs = payload.inputs[otherPlayerId];
-
-    if (!objectEqual(predictedInputs, actualInputs)) {
-      // ROLLBACK BABEEEEE
-      const currentFrame = currentWorld.frame;
-      const rollback = currentFrame - frame;
-      console.log(
-        `Input difference detected. Rollbacking ${rollback} frames...`
-      );
-      const rollbackWorld = createWorld();
-      rollbackWorld.frame = frame;
-      rollbackWorld.inputs = savedState.i;
-      rollbackWorld.inputs[otherPlayerId] = actualInputs;
-      deserialize(rollbackWorld, savedState.w);
-      while (rollbackWorld.frame < currentFrame + 1) {
-        minimalPipeline(rollbackWorld);
-        rollbackWorld.frame++;
-      }
-
-      // TODO: queue the network payload and treat in in the system function
-      queuedWorld = rollbackWorld;
-    }
-
-    W.delete(frame);
+    setTimeout(() => {
+      networkPayloadQueue.push(payload);
+    }, 100);
   });
 
   return (world: JabjabWorld) => {
-    currentWorld = world;
-
     const payload: NetworkPayload = {
       frame: world.frame,
       inputs: {
         [playerId]: world.inputs[playerId],
       },
     };
+    const payloadJson = JSON.stringify(payload);
 
+    // simulate network delay
+    sendChannel.send(payloadJson);
+
+    // save game state to be used in a possible future rollback
     const serializedWorld = serialize(world);
     W.set(world.frame, { i: world.inputs, w: serializedWorld });
 
-    // simulate network delay
-    setTimeout(() => {
-      sendChannel.send(JSON.stringify(payload));
-    }, 2000);
+    // check for rollbacks
+    networkPayloadQueue.sort((a, b) => a.frame - b.frame);
+    while (networkPayloadQueue.length) {
+      const payload = networkPayloadQueue[0];
+      const savedState = W.get(payload.frame);
 
-    const returnedWorld = queuedWorld ?? world;
-    queuedWorld = null;
+      if (!savedState) {
+        console.log("We received a frame from the future 🤔");
+        throw new Error("We received a frame from the future 🤔");
+      }
 
-    return returnedWorld;
+      const predictedInputs = savedState.i[otherPlayerId];
+      const actualInputs = payload.inputs[otherPlayerId];
+
+      if (objectEqual(predictedInputs, actualInputs)) {
+        // get rid of saved state because we now know that the predicted inputs were correct
+        // TODO: clean W when needed
+        // W.delete(payload.frame);
+        // get rid of queued network payload, we checked it
+        networkPayloadQueue.shift();
+        continue;
+      } else {
+        // rollback
+        const rollbackWorld = createWorld();
+        deserialize(rollbackWorld, savedState.w);
+        rollbackWorld.frame = payload.frame;
+
+        while (rollbackWorld.frame !== world.frame) {
+          const savedState = W.get(rollbackWorld.frame)!;
+          rollbackWorld.inputs[playerId] = savedState.i[playerId]!;
+          if (networkPayloadQueue[0]?.frame === rollbackWorld.frame) {
+            const i = networkPayloadQueue.shift()?.inputs[otherPlayerId]!;
+            rollbackWorld.inputs[otherPlayerId] = i;
+          }
+          // save game state to be used in a possible future rollback
+          console.log(rollbackWorld.frame, rollbackWorld.inputs[otherPlayerId]);
+          const serializedWorld = serialize(rollbackWorld);
+          W.set(rollbackWorld.frame, {
+            i: rollbackWorld.inputs,
+            w: serializedWorld,
+          });
+          minimalPipeline(rollbackWorld);
+          rollbackWorld.frame++;
+        }
+
+        const serializedWorld = serialize(rollbackWorld);
+        W.set(rollbackWorld.frame, {
+          i: rollbackWorld.inputs,
+          w: serializedWorld,
+        });
+
+        rollbackWorld.debug = world.debug;
+
+        return rollbackWorld;
+      }
+    }
+
+    return world;
   };
 }

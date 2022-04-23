@@ -23,6 +23,8 @@ export function RenderingSystem(ctx: CanvasRenderingContext2D): JabjabSystem {
       );
       ctx.fill();
     }
+    document.getElementById("p0")!.innerHTML = `${Position.x[eids[0]]}`;
+    document.getElementById("p1")!.innerHTML = `${Position.x[eids[1]]}`;
 
     ctx.font = "3rem monospace";
     ctx.fillStyle = "white";

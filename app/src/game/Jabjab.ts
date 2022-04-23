@@ -18,12 +18,14 @@ interface JabjabGameOptions {
 export function runGame(options: JabjabGameOptions) {
   const { canvas, playerId, sendChannel, receiveChannel } = options;
 
+  const otherPlayerId = playerId === 0 ? 1 : 0;
+
   const ctx = canvas.getContext("2d");
   if (!ctx) {
     throw new Error("Cannot get rendering context");
   }
 
-  const world = createWorld();
+  let world = createWorld();
   initializeWorld(world);
 
   const pipeline = pipe(
@@ -36,7 +38,9 @@ export function runGame(options: JabjabGameOptions) {
   const FRAME_DIFF = 1000 / 61;
   let then = 0;
   function loop(now: number) {
+    // if (world.frame < 1000) {
     requestAnimationFrame(loop);
+    // }
 
     // TODO: framerate is wonky on firefox. Find a way to balance frame length over time.
     const diff = now - then;
@@ -44,7 +48,7 @@ export function runGame(options: JabjabGameOptions) {
       world.debug.tslf = now - then;
       world.debug.fps = 1000 / (now - then);
       then = now;
-      pipeline(world);
+      world = pipeline(world);
       world.frame++;
     }
   }

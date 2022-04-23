@@ -40,7 +40,7 @@ export function initializeWorld(world: JabjabWorld) {
   addComponent(world, Position, p1);
   addComponent(world, Rectangle, p1);
   Controllable.playerId[p1] = 0;
-  Position.x[p1] = 50;
+  Position.x[p1] = 0;
   Position.y[p1] = 100;
   Rectangle.w[p1] = 20;
   Rectangle.h[p1] = 20;

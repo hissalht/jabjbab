@@ -57,6 +57,8 @@ Promise.all([getSendChannel(), getReceiveChannel()]).then(
   >
     Start RTC connection
   </button>
+  <p id="p0"></p>
+  <p id="p1"></p>
   <canvas v-if="connectionReady" width="800" height="600" ref="canvas" />
 </template>
 
