@@ -16,6 +16,6 @@ export interface JabjabWorld extends IWorld {
   debug: {
     tslf: number; // time since last frame
     fps: number; // frames per second
-    fdif: number; // frame
+    rf: number; // rollback frames
   };
 }

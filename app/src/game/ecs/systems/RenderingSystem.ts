@@ -11,7 +11,7 @@ export function RenderingSystem(ctx: CanvasRenderingContext2D): JabjabSystem {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "cyan";
     const eids = renderableQuery(world);
     for (const eid of eids) {
       ctx.beginPath();
@@ -30,7 +30,7 @@ export function RenderingSystem(ctx: CanvasRenderingContext2D): JabjabSystem {
     ctx.fillStyle = "white";
     ctx.fillText(`TSLF: ${world.debug.tslf.toFixed(1)} ms`, 300, 50);
     ctx.fillText(`FPS: ${world.debug.fps.toFixed(1)} Hz`, 300, 100);
-    ctx.fillText(`FDIF: ${world.debug.fdif}`, 300, 150);
+    ctx.fillText(`RF: ${world.debug.rf}f`, 300, 150);
 
     return world;
   };

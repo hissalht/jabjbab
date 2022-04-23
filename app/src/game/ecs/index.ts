@@ -29,7 +29,7 @@ export function createWorld(): JabjabWorld {
     debug: {
       tslf: 0,
       fps: 0,
-      fdif: 0,
+      rf: 0,
     },
   });
 }

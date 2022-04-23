@@ -1,8 +1,5 @@
 import { defineDeserializer, defineSerializer, pipe } from "bitecs";
 import { createWorld } from "..";
-import { Controllable } from "../components/Controllable";
-import { Position } from "../components/Position";
-import { Rectangle } from "../components/Rectangle";
 import { JabjabSystem } from "../JabjabSystem";
 import { JabjabWorld, PlayerInputs } from "../JabjabWorld";
 import { MovementSystem } from "./MovementSystem";
@@ -47,7 +44,7 @@ export function RollbackNetcodeSystem(
     const payload: NetworkPayload = JSON.parse(data);
     setTimeout(() => {
       networkPayloadQueue.push(payload);
-    }, 100);
+    }, 30);
   });
 
   return (world: JabjabWorld) => {
@@ -89,6 +86,9 @@ export function RollbackNetcodeSystem(
         continue;
       } else {
         // rollback
+
+        const rf = world.frame - payload.frame;
+
         const rollbackWorld = createWorld();
         deserialize(rollbackWorld, savedState.w);
         rollbackWorld.frame = payload.frame;
@@ -118,6 +118,7 @@ export function RollbackNetcodeSystem(
         });
 
         rollbackWorld.debug = world.debug;
+        rollbackWorld.debug.rf = rf;
 
         return rollbackWorld;
       }
