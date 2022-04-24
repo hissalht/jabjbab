@@ -11,6 +11,10 @@ export function RenderingSystem(ctx: CanvasRenderingContext2D): JabjabSystem {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+    ctx.save();
+    ctx.translate(0, ctx.canvas.height);
+    ctx.scale(1, -1);
+
     ctx.fillStyle = "cyan";
     const eids = renderableQuery(world);
     for (const eid of eids) {
@@ -23,6 +27,9 @@ export function RenderingSystem(ctx: CanvasRenderingContext2D): JabjabSystem {
       );
       ctx.fill();
     }
+
+    ctx.restore();
+
     document.getElementById("p0")!.innerHTML = `${Position.x[eids[0]]}`;
     document.getElementById("p1")!.innerHTML = `${Position.x[eids[1]]}`;
 

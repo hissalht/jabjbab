@@ -101,7 +101,6 @@ export function RollbackNetcodeSystem(
             rollbackWorld.inputs[otherPlayerId] = i;
           }
           // save game state to be used in a possible future rollback
-          console.log(rollbackWorld.frame, rollbackWorld.inputs[otherPlayerId]);
           const serializedWorld = serialize(rollbackWorld);
           W.set(rollbackWorld.frame, {
             i: rollbackWorld.inputs,

@@ -18,10 +18,10 @@ export const MovementSystem: JabjabSystem = function (world: JabjabWorld) {
       Position.x[eid] += 5;
     }
     if (world.inputs[playerId].up) {
-      Position.y[eid] -= 5;
+      Position.y[eid] += 5;
     }
     if (world.inputs[playerId].down) {
-      Position.y[eid] += 5;
+      Position.y[eid] -= 5;
     }
   }
   return world;
