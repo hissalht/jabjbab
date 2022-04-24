@@ -1,8 +1,7 @@
-import { defineDeserializer, defineSerializer, pipe } from "bitecs";
-import { createWorld } from "..";
+import { defineDeserializer, defineSerializer } from "bitecs";
+import { createWorld, minimalPipeline } from "..";
 import { JabjabSystem } from "../JabjabSystem";
 import { JabjabWorld, PlayerInputs } from "../JabjabWorld";
-import { MovementSystem } from "./MovementSystem";
 
 function objectEqual(a: Record<string, any>, b: Record<string, any>): boolean {
   for (const key in a) {
@@ -29,7 +28,6 @@ export function RollbackNetcodeSystem(
   const otherPlayerId = playerId === 0 ? 1 : 0;
   const serialize = defineSerializer(worldConfig);
   const deserialize = defineDeserializer(worldConfig);
-  const minimalPipeline = pipe(MovementSystem);
   const W = new Map<
     number,
     {

@@ -3,9 +3,9 @@ import {
   createWorld,
   initializeWorld,
   InputSystem,
-  MovementSystem,
   RollbackNetcodeSystem,
   RenderingSystem,
+  minimalPipeline,
 } from "./ecs";
 
 interface JabjabGameOptions {
@@ -23,18 +23,13 @@ export function runGame(options: JabjabGameOptions) {
     throw new Error("Cannot get rendering context");
   }
 
-  // ctx.tran
-  // translate(0,canvas.height); scale(1,-1);
-  // ctx.translate(0, canvas.height);
-  // ctx.scale(1, -1);
-
   let world = createWorld();
   initializeWorld(world);
 
   const pipeline = pipe(
     InputSystem(document.body, playerId),
     RollbackNetcodeSystem(sendChannel, receiveChannel, world, playerId),
-    MovementSystem,
+    minimalPipeline,
     RenderingSystem(ctx)
   );
 
