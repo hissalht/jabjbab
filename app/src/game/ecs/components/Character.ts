@@ -1,9 +1,10 @@
 import { defineComponent, Types } from "bitecs";
 
 export enum CharacterState {
-  NEUTRAL = 0,
-  WALKING_FORWARD = 1,
-  WALKING_BACKWARD = 2,
+  IDLE = 0,
+  WALK_FORWARD = 1,
+  WALK_BACKWARD = 2,
+  NEUTRAL_JUMP = 3,
 }
 
 export enum CharacterDirection {

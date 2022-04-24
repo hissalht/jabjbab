@@ -15,17 +15,17 @@ export const ActionSystem: JabjabSystem = (world) => {
     const playerId = Character.playerId[eid] as 0 | 1;
 
     if (world.inputs[playerId].left === world.inputs[playerId].right) {
-      Character.state[eid] = CharacterState.NEUTRAL;
+      Character.state[eid] = CharacterState.IDLE;
     } else if (world.inputs[playerId].left) {
       Character.state[eid] =
         Character.direction[eid] === CharacterDirection.LEFT
-          ? CharacterState.WALKING_FORWARD
-          : CharacterState.WALKING_BACKWARD;
+          ? CharacterState.WALK_FORWARD
+          : CharacterState.WALK_BACKWARD;
     } else if (world.inputs[playerId].right) {
       Character.state[eid] =
         Character.direction[eid] === CharacterDirection.RIGHT
-          ? CharacterState.WALKING_FORWARD
-          : CharacterState.WALKING_BACKWARD;
+          ? CharacterState.WALK_FORWARD
+          : CharacterState.WALK_BACKWARD;
     }
   }
 

@@ -13,17 +13,17 @@ const movableQuery = defineQuery([Character, Position]);
 export const MovementSystem: JabjabSystem = function (world: JabjabWorld) {
   for (const eid of movableQuery(world)) {
     switch (Character.state[eid]) {
-      case CharacterState.WALKING_FORWARD:
+      case CharacterState.WALK_FORWARD:
         Position.x[eid] +=
           5 * (Character.direction[eid] === CharacterDirection.LEFT ? -1 : 1);
         break;
 
-      case CharacterState.WALKING_BACKWARD:
+      case CharacterState.WALK_BACKWARD:
         Position.x[eid] +=
           5 * (Character.direction[eid] === CharacterDirection.LEFT ? 1 : -1);
         break;
 
-      case CharacterState.NEUTRAL:
+      case CharacterState.IDLE:
       default:
       // Nothing to do
     }
