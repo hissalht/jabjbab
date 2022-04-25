@@ -1,6 +1,12 @@
 import { socket } from "./socket";
 
-const conn = new RTCPeerConnection();
+const conn = new RTCPeerConnection({
+  iceServers: [
+    {
+      urls: ["stun:stun3.l.google.com:19302?transport=udp"],
+    },
+  ],
+});
 const sendChannel = conn.createDataChannel("sendChannel");
 let receiveChannel: RTCDataChannel;
 
