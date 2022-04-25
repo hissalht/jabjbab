@@ -43,5 +43,6 @@ function emitRoomUpdate(room: string, id: string) {
 io.of("/").adapter.on("join-room", emitRoomUpdate);
 io.of("/").adapter.on("leave-room", emitRoomUpdate);
 
-io.listen(4000);
-console.log("Listening on port", 4000);
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+io.listen(port);
+console.log("Listening on port", port);

@@ -2,7 +2,9 @@
   "name": "jabjab-server",
   "private": true,
   "scripts": {
-    "dev": "ts-node-dev src/main.ts"
+    "dev": "ts-node-dev src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js"
   },
   "devDependencies": {
     "ts-node": "^10.7.0",
