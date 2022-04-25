@@ -43,23 +43,40 @@ Promise.all([getSendChannel(), getReceiveChannel()]).then(
     });
   }
 );
+
+const debugData = ref("ljsdflksdjf");
+function updateDebugData() {
+  // @ts-expect-error
+  debugData.value = JSON.stringify(window._debug, null, 2);
+  requestAnimationFrame(updateDebugData);
+}
+requestAnimationFrame(updateDebugData);
 </script>
 
 <template>
   <h1>Jab Jab</h1>
-  <p>Players in the room ({{ room?.length ?? 0 }} / 2) :</p>
-  <ul v-if="room">
-    <li v-for="player in room" :key="player">{{ player }}</li>
-  </ul>
-  <button
-    :disabled="(room?.length ?? 0) !== 2 || !isInitiator || connectionInitiated"
-    @click="start"
-  >
-    Start RTC connection
-  </button>
-  <p id="p0"></p>
-  <p id="p1"></p>
-  <canvas v-if="connectionReady" width="800" height="600" ref="canvas" />
+  <template v-if="connectionReady">
+    <code>
+      <pre>{{ debugData }}</pre>
+    </code>
+    <canvas width="800" height="600" ref="canvas" />
+  </template>
+  <template v-else>
+    <p>Players in the room ({{ room?.length ?? 0 }} / 2) :</p>
+    <ul v-if="room">
+      <li v-for="player in room" :key="player">{{ player }}</li>
+    </ul>
+    <button
+      :disabled="
+        (room?.length ?? 0) !== 2 || !isInitiator || connectionInitiated
+      "
+      @click="start"
+    >
+      Start RTC connection
+    </button>
+    <p id="p0"></p>
+    <p id="p1"></p>
+  </template>
 </template>
 
 <style scoped>

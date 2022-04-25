@@ -4,13 +4,14 @@ import {
   createWorld as baseCreateWorld,
   pipe,
 } from "bitecs";
-import { Character } from "./components/Character";
+import { Character, CharacterDirection } from "./components/Character";
 import { Position, PositionOffset } from "./components/Position";
 import { PushBox } from "./components/PushBox";
 import { Rectangle } from "./components/Rectangle";
 import { JabjabWorld } from "./JabjabWorld";
 import { ActionSystem } from "./systems/ActionSystem";
 import { MovementSystem } from "./systems/MovementSystem";
+import { PushBoxSystem } from "./systems/PushBoxSystem";
 
 export function createWorld(): JabjabWorld {
   return baseCreateWorld({
@@ -42,6 +43,7 @@ export function initializeWorld(world: JabjabWorld) {
   addComponent(world, Character, p1);
   addComponent(world, Position, p1);
   Character.playerId[p1] = 0;
+  Character.direction[p1] = CharacterDirection.RIGHT;
   Position.x[p1] = 50;
   Position.y[p1] = 0;
 
@@ -49,8 +51,8 @@ export function initializeWorld(world: JabjabWorld) {
   addComponent(world, PushBox, p1PushBox);
   PushBox.characterId[p1PushBox] = p1;
   addComponent(world, Rectangle, p1PushBox);
-  Rectangle.w[p1PushBox] = 150;
-  Rectangle.h[p1PushBox] = 250;
+  Rectangle.w[p1PushBox] = 120;
+  Rectangle.h[p1PushBox] = 200;
   addComponent(world, PositionOffset, p1PushBox);
   PositionOffset.x[p1PushBox] = -Rectangle.w[p1PushBox] / 2;
 
@@ -58,6 +60,7 @@ export function initializeWorld(world: JabjabWorld) {
   addComponent(world, Character, p2);
   addComponent(world, Position, p2);
   Character.playerId[p2] = 1;
+  Character.direction[p2] = CharacterDirection.LEFT;
   Position.x[p2] = 500;
   Position.y[p2] = 0;
 
@@ -65,13 +68,17 @@ export function initializeWorld(world: JabjabWorld) {
   addComponent(world, PushBox, p2PushBox);
   PushBox.characterId[p2PushBox] = p2;
   addComponent(world, Rectangle, p2PushBox);
-  Rectangle.w[p2PushBox] = 150;
-  Rectangle.h[p2PushBox] = 250;
+  Rectangle.w[p2PushBox] = 120;
+  Rectangle.h[p2PushBox] = 200;
   addComponent(world, PositionOffset, p2PushBox);
   PositionOffset.x[p2PushBox] = -Rectangle.w[p2PushBox] / 2;
 }
 
-export const minimalPipeline = pipe(ActionSystem, MovementSystem);
+export const minimalPipeline = pipe(
+  ActionSystem,
+  MovementSystem,
+  PushBoxSystem
+);
 
 export * from "./systems/InputSystem";
 export * from "./systems/MovementSystem";

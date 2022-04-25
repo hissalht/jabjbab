@@ -38,6 +38,9 @@ export function runGame(options: JabjabGameOptions) {
   function loop(now: number) {
     requestAnimationFrame(loop);
 
+    // @ts-expect-error
+    window._debug = world.debug;
+
     // TODO: framerate is wonky on firefox. Find a way to balance frame length over time.
     const diff = now - then;
     if (diff >= FRAME_DIFF) {

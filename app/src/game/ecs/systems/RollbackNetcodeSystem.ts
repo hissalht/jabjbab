@@ -40,9 +40,9 @@ export function RollbackNetcodeSystem(
 
   receiveChannel.addEventListener("message", ({ data }) => {
     const payload: NetworkPayload = JSON.parse(data);
-    setTimeout(() => {
-      networkPayloadQueue.push(payload);
-    }, 30);
+    // setTimeout(() => {
+    networkPayloadQueue.push(payload);
+    // }, 30);
   });
 
   return (world: JabjabWorld) => {
