@@ -3,7 +3,24 @@ import { JabjabWorld } from "../JabjabWorld";
 
 type QueuedKeyEvent = ["keydown" | "keyup", string];
 
-export function InputSystem(domEl: HTMLElement, playerId: 0 | 1): JabjabSystem {
+interface InputSystemOptions {
+  /** Element to bind the event listener */
+  domEl: HTMLElement;
+
+  /** For which player the system gets the inputs */
+  playerId: 0 | 1;
+
+  /** Keyboard configuration */
+  keybinds: {
+    left: string[];
+    right: string[];
+    up: string[];
+    down: string[];
+  };
+}
+
+export function InputSystem(options: InputSystemOptions): JabjabSystem {
+  const { domEl, playerId, keybinds } = options;
   const queue: Array<QueuedKeyEvent> = [];
 
   domEl.addEventListener("keydown", (e) => {
@@ -20,13 +37,13 @@ export function InputSystem(domEl: HTMLElement, playerId: 0 | 1): JabjabSystem {
     while (queue.length) {
       const [eventType, key] = queue.shift()!;
 
-      if (key === "ArrowLeft") {
+      if (keybinds.left.includes(key)) {
         world.inputs[playerId].left = eventType === "keydown";
-      } else if (key === "ArrowRight") {
+      } else if (keybinds.right.includes(key)) {
         world.inputs[playerId].right = eventType === "keydown";
-      } else if (key === "ArrowUp") {
+      } else if (keybinds.up.includes(key)) {
         world.inputs[playerId].up = eventType === "keydown";
-      } else if (key === "ArrowDown") {
+      } else if (keybinds.down.includes(key)) {
         world.inputs[playerId].down = eventType === "keydown";
       }
     }

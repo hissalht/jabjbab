@@ -27,7 +27,26 @@ export function runGame(options: JabjabGameOptions) {
   initializeWorld(world);
 
   const pipeline = pipe(
-    InputSystem(document.body, playerId),
+    InputSystem({
+      domEl: document.body,
+      playerId,
+      keybinds: {
+        left: ["ArrowLeft"],
+        right: ["ArrowRight"],
+        down: ["ArrowDown"],
+        up: ["ArrowUp"],
+      },
+    }),
+    // InputSystem({
+    //   domEl: document.body,
+    //   playerId: playerId === 0 ? 1 : 0,
+    //   keybinds: {
+    //     left: ["z"],
+    //     right: ["f"],
+    //     down: ["e"],
+    //     up: [" "],
+    //   },
+    // }),
     RollbackNetcodeSystem(sendChannel, receiveChannel, world, playerId),
     minimalPipeline,
     RenderingSystem(ctx)
@@ -39,7 +58,7 @@ export function runGame(options: JabjabGameOptions) {
     requestAnimationFrame(loop);
 
     // @ts-expect-error
-    window._debug = world.debug;
+    window._debug = { ...world.debug, ...world.inputs };
 
     // TODO: framerate is wonky on firefox. Find a way to balance frame length over time.
     const diff = now - then;
