@@ -52,17 +52,21 @@ export function runGame(options: JabjabGameOptions) {
     RenderingSystem(ctx)
   );
 
-  const FRAME_DIFF = 1000 / 61;
+  const FRAMERATE = 60;
+
+  let start: number;
   let then = 0;
+
   function loop(now: number) {
     requestAnimationFrame(loop);
 
-    // @ts-expect-error
-    window._debug = { ...world.debug, ...world.inputs };
+    if (!start) {
+      start = now;
+    }
 
-    // TODO: framerate is wonky on firefox. Find a way to balance frame length over time.
-    const diff = now - then;
-    if (diff >= FRAME_DIFF) {
+    const targetRenderedFrames = Math.floor((now - start) / (1000 / FRAMERATE));
+
+    while (world.frame < targetRenderedFrames) {
       world.debug.tslf = now - then;
       world.debug.fps = 1000 / (now - then);
       then = now;
